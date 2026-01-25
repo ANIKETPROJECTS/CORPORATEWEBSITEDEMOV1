@@ -33,11 +33,11 @@ export function Navbar() {
       <div className="bg-[hsl(var(--header-main))] text-white">
         <div className="container-custom flex items-center justify-between h-[80px] md:h-[105px]">
           <Link href="/">
-            <div className="bg-white rounded-md px-3 py-2">
+            <div className="bg-white rounded-md px-4 py-1.5">
               <img 
                 src={logoImage} 
                 alt="CoreAxis Global" 
-                className="h-8 md:h-10 w-auto cursor-pointer"
+                className="h-10 md:h-14 w-auto cursor-pointer"
                 data-testid="img-logo"
               />
             </div>
