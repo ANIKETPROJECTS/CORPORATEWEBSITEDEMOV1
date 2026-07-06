@@ -76,32 +76,48 @@ export default function Home() {
   const { data: awards } = useAwards();
   const { data: industries } = useIndustries();
 
-  // Fetch custom hero images from admin settings
-  const { data: siteSettings } = useQuery<{ heroImages: string[] }>({
+  // Fetch all hero settings from admin
+  const { data: siteSettings } = useQuery<{
+    heroImages: string[];
+    heroSlides: { main: string; sub: string; highlight: string }[];
+    heroContent: { subtitle: string; primaryBtn: { text: string; link: string }; secondaryBtn: { text: string; link: string } };
+  }>({
     queryKey: ["/api/settings"],
     queryFn: () => fetch("/api/settings").then((r) => r.json()),
   });
 
   const defaultHeroImages = [heroImage1, heroImage2, heroImage3];
-  const customHeroImages = siteSettings?.heroImages ?? [];
-  const activeHeroImages = customHeroImages.length > 0 ? customHeroImages : defaultHeroImages;
+  const activeHeroImages = (siteSettings?.heroImages?.length ?? 0) > 0
+    ? siteSettings!.heroImages
+    : defaultHeroImages;
 
-  const [heroTextIndex, setHeroTextIndex] = useState(0);
-  const heroTexts = [
+  const defaultSlides = [
     { main: "Financial", sub: "confidence for", highlight: "today" },
     { main: "Strategic", sub: "guidance for", highlight: "growth" },
     { main: "Expert", sub: "solutions for", highlight: "success" },
   ];
+  const heroSlides = siteSettings?.heroSlides?.length ? siteSettings.heroSlides : defaultSlides;
 
-  // Clamp index to valid range whenever images change
-  const safeIndex = heroTextIndex % activeHeroImages.length;
+  const defaultContent = {
+    subtitle: "Tax, Audit & Advisory Solutions Built for Today's Businesses",
+    primaryBtn: { text: "Explore Services", link: "/services" },
+    secondaryBtn: { text: "Connect Now", link: "/contact" },
+  };
+  const heroContent = siteSettings?.heroContent ?? defaultContent;
+
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  // Clamp index to valid range whenever images or slides change
+  const totalSlides = Math.max(activeHeroImages.length, heroSlides.length);
+  const imgIndex = heroIndex % activeHeroImages.length;
+  const slideIndex = heroIndex % heroSlides.length;
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setHeroTextIndex((prev) => (prev + 1) % activeHeroImages.length);
+      setHeroIndex((prev) => (prev + 1) % totalSlides);
     }, 4000);
     return () => clearInterval(timer);
-  }, [activeHeroImages.length]);
+  }, [totalSlides]);
 
   const TypewriterEffect = ({ text }: { text: string }) => {
     return (
@@ -163,8 +179,8 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.img
-              key={safeIndex}
-              src={activeHeroImages[safeIndex]}
+              key={imgIndex}
+              src={activeHeroImages[imgIndex]}
               alt="Hero Background"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
@@ -193,17 +209,17 @@ export default function Home() {
             <div className="h-[160px] sm:h-[180px] md:h-[240px] mb-4 md:mb-8 flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.h1
-                  key={safeIndex}
+                  key={slideIndex}
                   initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
                   className="text-4xl sm:text-6xl md:text-7xl lg:text-[72px] font-medium text-white font-['Poppins',sans-serif] leading-[1.1] tracking-tight"
                 >
-                  {heroTexts[heroTextIndex % heroTexts.length].main} <br />
-                  {heroTexts[heroTextIndex % heroTexts.length].sub} <br />
+                  {heroSlides[slideIndex].main} <br />
+                  {heroSlides[slideIndex].sub} <br />
                   <span className="text-secondary">
-                    {heroTexts[heroTextIndex % heroTexts.length].highlight}
+                    {heroSlides[slideIndex].highlight}
                   </span>
                 </motion.h1>
               </AnimatePresence>
@@ -213,21 +229,21 @@ export default function Home() {
               variants={fadeIn}
               className="text-lg sm:text-xl md:text-3xl text-white/90 mb-6 md:mb-10 max-w-2xl leading-relaxed font-['Poppins',sans-serif] font-medium min-h-[2.5rem] md:min-h-[3.5rem] px-1"
             >
-              <TypewriterEffect text="Tax, Audit & Advisory Solutions Built for Today’s Businesses" />
+              <TypewriterEffect text={heroContent.subtitle} />
             </motion.p>
 
             <motion.div
               variants={fadeIn}
               className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 w-full"
             >
-              <Link href="/services" className="w-full sm:w-auto">
+              <Link href={heroContent.primaryBtn.link || "/services"} className="w-full sm:w-auto">
                 <button className="w-full bg-secondary text-primary px-6 md:px-8 py-4 md:py-4 rounded-full font-bold hover:bg-white transition-all duration-300 shadow-lg shadow-secondary/20 text-base md:text-base whitespace-nowrap">
-                  Explore Services
+                  {heroContent.primaryBtn.text || "Explore Services"}
                 </button>
               </Link>
-              <Link href="/contact" className="w-full sm:w-auto">
+              <Link href={heroContent.secondaryBtn.link || "/contact"} className="w-full sm:w-auto">
                 <button className="w-full bg-transparent border-2 border-white text-white px-6 md:px-8 py-4 md:py-4 rounded-full font-bold hover:bg-white hover:text-primary transition-all duration-300 text-base md:text-base whitespace-nowrap">
-                  Connect Now
+                  {heroContent.secondaryBtn.text || "Connect Now"}
                 </button>
               </Link>
             </motion.div>
