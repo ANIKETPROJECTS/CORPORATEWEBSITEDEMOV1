@@ -84,6 +84,8 @@ export default function Home() {
   }>({
     queryKey: ["/api/settings"],
     queryFn: () => fetch("/api/settings").then((r) => r.json()),
+    refetchInterval: 2000,
+    refetchIntervalInBackground: true,
   });
 
   const defaultHeroImages = [heroImage1, heroImage2, heroImage3];
