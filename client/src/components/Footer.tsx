@@ -48,6 +48,7 @@ export function Footer() {
               <li><Link href="/" className="hover:text-secondary transition-colors flex items-center gap-2">Home</Link></li>
               <li><Link href="/about" className="hover:text-secondary transition-colors flex items-center gap-2">About Us</Link></li>
               <li><Link href="/services" className="hover:text-secondary transition-colors flex items-center gap-2">Our Services</Link></li>
+              <li><Link href="/blog" className="hover:text-secondary transition-colors flex items-center gap-2">Blog</Link></li>
               <li><Link href="/about" className="hover:text-secondary transition-colors flex items-center gap-2">Meet Our Team</Link></li>
               <li><Link href="/contact" className="hover:text-secondary transition-colors flex items-center gap-2">Contact Us</Link></li>
             </ul>

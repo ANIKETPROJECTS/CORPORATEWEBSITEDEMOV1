@@ -47,6 +47,7 @@ export function Navbar() {
             <Link href="/" className="hover:text-secondary transition-colors py-2">Home</Link>
             <Link href="/about" className="hover:text-secondary transition-colors py-2">About Us</Link>
             <Link href="/services" className="hover:text-secondary transition-colors py-2">Services</Link>
+            <Link href="/blog" className="hover:text-secondary transition-colors py-2">Blog</Link>
             <Link href="/contact" className="hover:text-secondary transition-colors py-2">Contact</Link>
           </nav>
 
@@ -92,6 +93,7 @@ export function Navbar() {
                   <Link href="/" onClick={() => setIsOpen(false)} className="text-white hover:text-secondary transition-colors py-2 border-b border-white/5">Home</Link>
                   <Link href="/about" onClick={() => setIsOpen(false)} className="text-white hover:text-secondary transition-colors py-2 border-b border-white/5">About Us</Link>
                   <Link href="/services" onClick={() => setIsOpen(false)} className="text-white hover:text-secondary transition-colors py-2 border-b border-white/5">Services</Link>
+                  <Link href="/blog" onClick={() => setIsOpen(false)} className="text-white hover:text-secondary transition-colors py-2 border-b border-white/5">Blog</Link>
                   <Link href="/contact" onClick={() => setIsOpen(false)} className="text-white hover:text-secondary transition-colors py-2 border-b border-white/5">Contact</Link>
                 </nav>
 

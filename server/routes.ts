@@ -4,11 +4,18 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { db } from "./db";
 import { services, experts, testimonials, awards, industries } from "@shared/schema";
+import { connectMongoDB } from "./mongodb";
+import { setupBlogSession, registerBlogRoutes } from "./blog-routes";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
+  // Connect MongoDB and register blog routes
+  await connectMongoDB();
+  setupBlogSession(app);
+  registerBlogRoutes(app);
+
   app.get(api.services.list.path, async (_req, res) => {
     const data = await storage.getServices();
     res.json(data);
