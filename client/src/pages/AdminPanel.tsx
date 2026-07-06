@@ -138,7 +138,7 @@ function PostFormModal({ initial, onClose, onSave }: {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8">
+        exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-[#002140]">{isNew ? "Create New Post" : "Edit Post"}</h2>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition"><X className="w-5 h-5" /></button>
@@ -200,12 +200,12 @@ function PostFormModal({ initial, onClose, onSave }: {
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button type="button" onClick={() => set("published", !form.published)}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${form.published ? "bg-green-500" : "bg-gray-300"}`}>
-              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${form.published ? "translate-x-6" : "translate-x-0.5"}`} />
+              className={`relative shrink-0 w-12 h-6 rounded-full overflow-hidden transition-colors duration-200 ${form.published ? "bg-green-500" : "bg-gray-300"}`}>
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${form.published ? "translate-x-[26px]" : "translate-x-0.5"}`} />
             </button>
-            <span className="text-sm font-semibold text-gray-700">{form.published ? "Published" : "Draft"}</span>
+            <span className="text-sm font-semibold text-gray-700 select-none">{form.published ? "Published" : "Draft"}</span>
           </div>
           {error && <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg"><AlertCircle className="w-4 h-4" />{error}</div>}
           <div className="flex gap-3 pt-2">
