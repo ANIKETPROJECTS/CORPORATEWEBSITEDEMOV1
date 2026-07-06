@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -75,19 +76,32 @@ export default function Home() {
   const { data: awards } = useAwards();
   const { data: industries } = useIndustries();
 
+  // Fetch custom hero images from admin settings
+  const { data: siteSettings } = useQuery<{ heroImages: string[] }>({
+    queryKey: ["/api/settings"],
+    queryFn: () => fetch("/api/settings").then((r) => r.json()),
+  });
+
+  const defaultHeroImages = [heroImage1, heroImage2, heroImage3];
+  const customHeroImages = siteSettings?.heroImages ?? [];
+  const activeHeroImages = customHeroImages.length > 0 ? customHeroImages : defaultHeroImages;
+
   const [heroTextIndex, setHeroTextIndex] = useState(0);
   const heroTexts = [
-    { main: "Financial", sub: "confidence for", highlight: "today", image: heroImage1 },
-    { main: "Strategic", sub: "guidance for", highlight: "growth", image: heroImage2 },
-    { main: "Expert", sub: "solutions for", highlight: "success", image: heroImage3 },
+    { main: "Financial", sub: "confidence for", highlight: "today" },
+    { main: "Strategic", sub: "guidance for", highlight: "growth" },
+    { main: "Expert", sub: "solutions for", highlight: "success" },
   ];
+
+  // Clamp index to valid range whenever images change
+  const safeIndex = heroTextIndex % activeHeroImages.length;
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setHeroTextIndex((prev) => (prev + 1) % heroTexts.length);
+      setHeroTextIndex((prev) => (prev + 1) % activeHeroImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeHeroImages.length]);
 
   const TypewriterEffect = ({ text }: { text: string }) => {
     return (
@@ -149,8 +163,8 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.img
-              key={heroTextIndex}
-              src={heroTexts[heroTextIndex].image}
+              key={safeIndex}
+              src={activeHeroImages[safeIndex]}
               alt="Hero Background"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
@@ -179,17 +193,17 @@ export default function Home() {
             <div className="h-[160px] sm:h-[180px] md:h-[240px] mb-4 md:mb-8 flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.h1
-                  key={heroTextIndex}
+                  key={safeIndex}
                   initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
                   className="text-4xl sm:text-6xl md:text-7xl lg:text-[72px] font-medium text-white font-['Poppins',sans-serif] leading-[1.1] tracking-tight"
                 >
-                  {heroTexts[heroTextIndex].main} <br />
-                  {heroTexts[heroTextIndex].sub} <br />
+                  {heroTexts[heroTextIndex % heroTexts.length].main} <br />
+                  {heroTexts[heroTextIndex % heroTexts.length].sub} <br />
                   <span className="text-secondary">
-                    {heroTexts[heroTextIndex].highlight}
+                    {heroTexts[heroTextIndex % heroTexts.length].highlight}
                   </span>
                 </motion.h1>
               </AnimatePresence>

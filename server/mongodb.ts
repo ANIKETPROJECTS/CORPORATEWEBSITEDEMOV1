@@ -38,6 +38,16 @@ const blogPostSchema = new mongoose.Schema(
 
 export const BlogPost = mongoose.models.BlogPost || mongoose.model("BlogPost", blogPostSchema);
 
+// ─── Site Settings Schema ─────────────────────────────────────────────────────
+
+const siteSettingsSchema = new mongoose.Schema({
+  key: { type: String, required: true, unique: true },
+  value: mongoose.Schema.Types.Mixed,
+});
+
+export const SiteSettings =
+  mongoose.models.SiteSettings || mongoose.model("SiteSettings", siteSettingsSchema);
+
 // Helper: turn a title into a URL-safe slug
 export function slugify(text: string): string {
   return text
